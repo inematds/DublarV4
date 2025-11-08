@@ -21,7 +21,12 @@
       "Bash(dir:*)",
       "Bash(git init:*)",
       "Bash(git config:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(nul)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
