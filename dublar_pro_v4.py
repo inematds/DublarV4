@@ -524,7 +524,7 @@ def transcribe_faster_whisper(wav_path, workdir, src_lang, model_size="medium", 
     model = WhisperModel(model_size, device=device, compute_type=compute_type)
 
     # VAD otimizado para evitar fragmentacao excessiva
-    segments, info = model.transcribe(
+    segments_generator, info = model.transcribe(
         str(wav_path),
         language=src_lang,  # None = auto-detect
         vad_filter=True,
@@ -546,8 +546,11 @@ def transcribe_faster_whisper(wav_path, workdir, src_lang, model_size="medium", 
     if not src_lang:
         print(f"[INFO] Idioma detectado: {detected_lang} (probabilidade: {lang_prob:.1%})" if lang_prob else f"[INFO] Idioma detectado: {detected_lang}")
 
+    # Consumir o generator e mostrar progresso
+    print("[INFO] Transcrevendo... (isso pode levar alguns minutos)")
     segs = []
-    for s in segments:
+    seg_count = 0
+    for s in segments_generator:
         text = (s.text or "").strip()
         if text:
             segs.append({
@@ -555,6 +558,9 @@ def transcribe_faster_whisper(wav_path, workdir, src_lang, model_size="medium", 
                 "end": float(s.end),
                 "text": text
             })
+            seg_count += 1
+            if seg_count % 50 == 0:
+                print(f"  Processados: {seg_count} segmentos...")
 
     # Diarizacao opcional
     if diarize:
