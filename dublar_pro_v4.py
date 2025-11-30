@@ -1357,15 +1357,24 @@ def tts_edge(segments, workdir, tgt_lang, voice=None, rate="+0%", speaker_voices
 
                 out_path = Path(workdir, f"seg_{i:04d}.wav")
 
-                try:
-                    actual_dur = await generate_audio(txt, out_path, target_dur, voice_to_use)
-                    ratio = actual_dur / target_dur if target_dur > 0 else 1.0
-                except Exception as e:
-                    print(f"  [ERRO] Seg {i}: {e}")
-                    silence = np.zeros(int(target_dur * SAMPLE_RATE), dtype=np.int16)
-                    wavfile.write(str(out_path), SAMPLE_RATE, silence)
-                    actual_dur = target_dur
-                    ratio = 1.0
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        actual_dur = await generate_audio(txt, out_path, target_dur, voice_to_use)
+                        ratio = actual_dur / target_dur if target_dur > 0 else 1.0
+                        break
+                    except Exception as e:
+                        if attempt < max_retries - 1:
+                            await asyncio.sleep(2)  # Esperar 2s antes de retry
+                        else:
+                            print(f"  [ERRO] Seg {i}: {e}")
+                            silence = np.zeros(int(target_dur * SAMPLE_RATE), dtype=np.int16)
+                            wavfile.write(str(out_path), SAMPLE_RATE, silence)
+                            actual_dur = target_dur
+                            ratio = 1.0
+
+                # Pequeno delay entre requisições para evitar rate limit
+                await asyncio.sleep(0.1)
 
                 seg_files.append(out_path)
                 metricas.append({"idx": i, "target": target_dur, "actual": actual_dur, "ratio": ratio})
