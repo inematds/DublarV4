@@ -2194,11 +2194,22 @@ Exemplos:
     print("="*60)
 
     fixed = []
-    for i, s in enumerate(segs_trad, 1):
-        target = max(0.05, s["end"] - s["start"])
-        p = seg_files[i - 1]
+    use_rb = not args.no_rubberband  # Usar rubberband por padrao
 
-        use_rb = not args.no_rubberband  # Usar rubberband por padrao
+    # Garantir que temos a mesma quantidade de segmentos e arquivos
+    n_segs = len(segs_trad)
+    n_files = len(seg_files)
+    if n_segs != n_files:
+        print(f"[WARN] Mismatch: {n_segs} segmentos vs {n_files} arquivos")
+
+    # Usar o menor para evitar index out of range, mas processar todos os arquivos
+    for i, p in enumerate(seg_files):
+        if i < len(segs_trad):
+            s = segs_trad[i]
+            target = max(0.05, s["end"] - s["start"])
+        else:
+            # Arquivo extra do split - usar duracao padrao
+            target = ffprobe_duration(p) or 2.0
 
         if args.sync == "none":
             fixed.append(p)
