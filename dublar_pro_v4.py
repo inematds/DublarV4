@@ -987,34 +987,15 @@ def translate_ollama_with_context(text, src_lang, tgt_lang, model="llama3",
     src_name = lang_names.get(src_lang, src_lang)
     tgt_name = lang_names.get(tgt_lang, tgt_lang)
 
-    # Construir contexto
-    context_text = ""
-    if previous_segments and len(previous_segments) > 0:
-        context_text = "\n\nPrevious translations for context:\n"
-        for seg in previous_segments[-3:]:  # Ultimos 3 segmentos
-            orig = seg.get("text_original", "")[:50]
-            trad = seg.get("text_trad", "")[:50]
-            context_text += f"- \"{orig}\" -> \"{trad}\"\n"
-
-    # Instrucao de tamanho baseado na duracao - SEMPRE incluir
+    # Calcular limite de caracteres
     max_chars = int(target_duration * cps_original * 1.1) if target_duration and cps_original else len(text)
-    size_instruction = f"\n- CRITICAL: Keep translation under {max_chars} characters (you have {target_duration:.1f}s to speak this)"
 
-    prompt = f"""Translate the following text from {src_name} to {tgt_name}.
+    # PROMPT SIMPLES - llama3 se confunde com instruções complexas
+    prompt = f"""Translate to {tgt_name}. Maximum {max_chars} characters. Be concise.
 
-CRITICAL RULES:
-- This is for VIDEO DUBBING - the translation MUST fit in {target_duration:.1f} seconds
-- Maximum {max_chars} characters allowed - be CONCISE
-- Remove filler words, keep only essential meaning
-- Keep technical terms in English: API, callback, hook, string, array, props, state, function, class
-- Keep product names: Claude Code, ChatGPT, GitHub, React, Python
-- Do NOT add explanations, notes, or extra words
-- If in doubt, use fewer words
-{context_text}
-Text ({len(text)} chars):
 {text}
 
-Concise translation (max {max_chars} chars):"""
+Translation:"""
 
     try:
         response = httpx.post(
@@ -1024,8 +1005,9 @@ Concise translation (max {max_chars} chars):"""
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.3,
-                    "top_p": 0.9,
+                    "temperature": 0.1,  # Mais determinístico
+                    "top_p": 0.8,
+                    "num_predict": max_chars + 50,  # Limitar tokens gerados
                 }
             },
             timeout=60
