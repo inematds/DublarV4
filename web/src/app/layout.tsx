@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <nav className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" className="text-xl font-bold text-white">
-              Dublar <span className="text-blue-400">Pro</span>
+              Dublar <span className="text-blue-400">Pro</span> <span className="text-xs text-gray-500 ml-1">v5</span>
             </a>
             <div className="flex gap-6 text-sm">
               <a href="/" className="hover:text-blue-400 transition-colors">Dashboard</a>

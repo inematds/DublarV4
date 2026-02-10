@@ -205,6 +205,13 @@ class JobManager:
             try:
                 config = json.loads(config_path.read_text())
                 job = Job(job_id, config)
+                # Restaurar stage_times se existir
+                times_path = job_dir / "stage_times.json"
+                if times_path.exists():
+                    try:
+                        job.stage_times = json.loads(times_path.read_text())
+                    except Exception:
+                        pass
                 # Determinar status pelo que existe no disco
                 checkpoint = job._read_checkpoint()
                 dublado_dir = job_dir / "dublado"
@@ -298,10 +305,22 @@ class JobManager:
                 exit_code = job.process.returncode
                 job.finished_at = time.time()
 
+                # Processar todas as transicoes de etapa pendentes
+                # (a ultima etapa pode ter sido muito rapida e nao capturada no polling)
+                checkpoint = job._read_checkpoint()
+                job._calc_progress(checkpoint)
+
                 # Registrar tempo da ultima etapa
                 if job._last_stage_num > 0 and job._last_stage_num <= len(STAGES):
                     last_sid = STAGES[job._last_stage_num - 1]["id"]
                     job.stage_times[last_sid] = round(job.finished_at - job._last_stage_start, 1)
+
+                # Persistir stage_times em disco (sobrevive a restarts)
+                try:
+                    times_path = job.workdir / "stage_times.json"
+                    times_path.write_text(json.dumps(job.stage_times, indent=2))
+                except Exception:
+                    pass
 
                 if exit_code == 0:
                     job.status = "completed"
