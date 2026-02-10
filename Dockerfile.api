@@ -57,7 +57,7 @@ print(f'OK: PyTorch {v}'); \
 "
 
 # Copiar codigo
-COPY dublar_pro_v4.py .
+COPY dublar_pro_v5.py .
 COPY api/ ./api/
 
 # Diretorios

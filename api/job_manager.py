@@ -16,7 +16,7 @@ from typing import Optional
 from api.stats_tracker import STAGES, estimate_remaining, record_job_complete, format_eta
 
 JOBS_DIR = Path(os.environ.get("JOBS_DIR", "jobs"))
-PIPELINE_SCRIPT = os.environ.get("PIPELINE_SCRIPT", "dublar_pro_v4.py")
+PIPELINE_SCRIPT = os.environ.get("PIPELINE_SCRIPT", "dublar_pro_v5.py")
 PYTHON_BIN = os.environ.get("PYTHON_BIN", sys.executable or shutil.which("python3") or "python3")
 DOCKER_GPU_IMAGE = os.environ.get("DOCKER_GPU_IMAGE", "dublar-pro:gpu")
 PROJECT_DIR = Path(__file__).parent.parent.resolve()

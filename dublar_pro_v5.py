@@ -1,5 +1,5 @@
-# dublar_pro_v4.py
-# Pipeline de dublagem PROFISSIONAL v4.0 - COMPLETO
+# dublar_pro_v5.py
+# Pipeline de dublagem PROFISSIONAL v5.0 - COMPLETO
 # Todas as 4 fases implementadas:
 # - Fase 1: Correcoes criticas (normalizacao, max_length, maxstretch, seed)
 # - Fase 2: Qualidade (contexto, CPS adaptativo, Ollama)
@@ -2732,31 +2732,31 @@ def main():
         epilog="""
 Exemplos:
   # Basico (idioma origem especificado)
-  python dublar_pro_v4.py --in video.mp4 --src en --tgt pt
+  python dublar_pro_v5.py --in video.mp4 --src en --tgt pt
 
   # Auto-detectar idioma origem (omitir --src)
-  python dublar_pro_v4.py --in video.mp4 --tgt pt
+  python dublar_pro_v5.py --in video.mp4 --tgt pt
 
   # YouTube direto
-  python dublar_pro_v4.py --in "https://youtube.com/watch?v=XXX" --tgt pt
+  python dublar_pro_v5.py --in "https://youtube.com/watch?v=XXX" --tgt pt
 
   # Com Ollama (traducao natural)
-  python dublar_pro_v4.py --in video.mp4 --tgt pt --tradutor ollama --modelo llama3
+  python dublar_pro_v5.py --in video.mp4 --tgt pt --tradutor ollama --modelo llama3
 
   # Clonagem de voz
-  python dublar_pro_v4.py --in video.mp4 --src en --tgt pt --tts xtts --clonar-voz
+  python dublar_pro_v5.py --in video.mp4 --src en --tgt pt --tts xtts --clonar-voz
 
   # Multiplos falantes (diarizacao)
-  python dublar_pro_v4.py --in video.mp4 --src en --tgt pt --diarize
+  python dublar_pro_v5.py --in video.mp4 --src en --tgt pt --diarize
 
   # Maxima qualidade
-  python dublar_pro_v4.py --in video.mp4 --src en --tgt pt --qualidade maximo
+  python dublar_pro_v5.py --in video.mp4 --src en --tgt pt --qualidade maximo
 
   # Usando Parakeet (NVIDIA) - mais rapido que Whisper
-  python dublar_pro_v4.py --in video.mp4 --tgt pt --asr parakeet
+  python dublar_pro_v5.py --in video.mp4 --tgt pt --asr parakeet
 
   # Parakeet com segmentacao customizada
-  python dublar_pro_v4.py --in video.mp4 --tgt pt --asr parakeet --segment-pause 0.5 --segment-max-words 20
+  python dublar_pro_v5.py --in video.mp4 --tgt pt --asr parakeet --segment-pause 0.5 --segment-max-words 20
         """
     )
 

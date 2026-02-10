@@ -1,4 +1,4 @@
-# Dublar Pro v4 - Dockerfile com GPU NVIDIA
+# Dublar Pro v5 - Dockerfile com GPU NVIDIA
 # Base: NVIDIA PyTorch container (testado com GB10 Blackwell)
 FROM nvcr.io/nvidia/pytorch:25.01-py3
 
@@ -57,10 +57,10 @@ assert not is_cpu, f'PyTorch foi substituido pela versao CPU! ({v})'; \
 "
 
 # Copiar pipeline
-COPY dublar_pro_v4.py .
+COPY dublar_pro_v5.py .
 COPY dublar-pro.sh .
 
 # Diretorios de trabalho e saida
 RUN mkdir -p /app/dub_work /app/dublado
 
-ENTRYPOINT ["python", "dublar_pro_v4.py"]
+ENTRYPOINT ["python", "dublar_pro_v5.py"]
