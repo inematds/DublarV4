@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getOptions, createJob } from "@/lib/api";
 
 type Options = {
-  tts_engines: { id: string; name: string; needs_gpu: boolean; needs_internet: boolean }[];
+  tts_engines: { id: string; name: string; needs_gpu: boolean; needs_internet: boolean; quality?: string; description?: string; detail?: string }[];
   translation_engines: { id: string; name: string; models: string[] | string; description?: string; detail?: string; needs_gpu?: boolean }[];
   whisper_models: { id: string; name: string; quality: string; turbo?: boolean }[];
   asr_engines: { id: string; name: string; description: string; detail?: string; needs_gpu: boolean; supports_languages: string | string[] }[];
@@ -343,15 +343,31 @@ export default function NewJob() {
 
           {/* TTS */}
           <div className="mb-4">
-            <label className="block text-sm text-gray-400 mb-1">Motor TTS (Voz)</label>
-            <select value={ttsEngine} onChange={(e) => { setTtsEngine(e.target.value); setVoice(""); }}
-              className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white">
-              {options?.tts_engines.map((e) => (
-                <option key={e.id} value={e.id}>
-                  {e.name} {e.needs_gpu ? "(GPU)" : ""} {e.needs_internet ? "(Online)" : "(Offline)"}
-                </option>
+            <label className="block text-sm text-gray-400 mb-2">Motor TTS (Voz)</label>
+            <div className="space-y-2">
+              {options?.tts_engines.map((te) => (
+                <DetailCard
+                  key={te.id}
+                  id={`tts_${te.id}`}
+                  name={te.name}
+                  description={te.description || ""}
+                  detail={te.detail}
+                  selected={ttsEngine === te.id}
+                  onSelect={() => { setTtsEngine(te.id); setVoice(""); }}
+                  expandedDetail={expandedDetail}
+                  setExpandedDetail={setExpandedDetail}
+                  badges={
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {te.needs_gpu && <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded">GPU</span>}
+                      {!te.needs_gpu && <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">CPU</span>}
+                      {te.needs_internet && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">Online</span>}
+                      {!te.needs_internet && <span className="text-xs bg-gray-500/20 text-gray-400 px-2 py-0.5 rounded">Offline</span>}
+                      {te.quality && <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">{te.quality}</span>}
+                    </div>
+                  }
+                />
               ))}
-            </select>
+            </div>
           </div>
 
           {/* Voz */}
@@ -414,12 +430,21 @@ export default function NewJob() {
           {translationEngine === "ollama" && (
             <div className="mb-4">
               <label className="block text-sm text-gray-400 mb-1">Modelo Ollama</label>
-              <select value={ollamaModel} onChange={(e) => setOllamaModel(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white">
-                {options?.ollama_models?.map((m) => (
-                  <option key={m.id} value={m.id}>{m.name} ({m.size_gb}GB)</option>
-                ))}
-              </select>
+              {options?.ollama_models && options.ollama_models.length > 0 ? (
+                <select value={ollamaModel} onChange={(e) => setOllamaModel(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-white">
+                  {options.ollama_models.map((m) => (
+                    <option key={m.id} value={m.id}>{m.name} ({m.size_gb}GB)</option>
+                  ))}
+                </select>
+              ) : (
+                <div className="text-sm text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                  Ollama offline ou sem modelos instalados. Inicie o Ollama e baixe um modelo:
+                  <code className="block mt-2 text-xs text-gray-300 bg-gray-900 rounded p-2">
+                    ollama pull qwen2.5:14b
+                  </code>
+                </div>
+              )}
             </div>
           )}
 

@@ -87,10 +87,42 @@ ASR_ENGINES = [
 ]
 
 TTS_ENGINES = [
-    {"id": "edge", "name": "Edge TTS (Microsoft)", "needs_gpu": False, "needs_internet": True, "quality": "excelente"},
-    {"id": "bark", "name": "Bark (Suno AI)", "needs_gpu": True, "needs_internet": False, "quality": "boa"},
-    {"id": "piper", "name": "Piper (Leve)", "needs_gpu": False, "needs_internet": False, "quality": "razoavel"},
-    {"id": "xtts", "name": "XTTS (Clonar Voz)", "needs_gpu": True, "needs_internet": False, "quality": "muito boa"},
+    {
+        "id": "edge",
+        "name": "Edge TTS (Microsoft)",
+        "needs_gpu": False,
+        "needs_internet": True,
+        "quality": "excelente",
+        "description": "Vozes naturais de alta qualidade. Rapido e gratis, requer internet.",
+        "detail": "Usa a API gratuita da Microsoft (mesmas vozes do Windows e Edge). Suporta dezenas de idiomas com multiplas vozes por idioma. Qualidade excelente, velocidade rapida, sem custo de GPU. Unica desvantagem: precisa de conexao com internet.",
+    },
+    {
+        "id": "bark",
+        "name": "Bark (Suno AI)",
+        "needs_gpu": True,
+        "needs_internet": False,
+        "quality": "boa",
+        "description": "Voz expressiva com emocao. Ri, suspira, tem entonacao natural. Lento.",
+        "detail": "Modelo generativo da Suno AI que produz fala com emocao real: risadas, pausas dramaticas, suspiros, entonacao expressiva. Consome bastante VRAM e e significativamente mais lento que Edge TTS. Ideal para conteudo dramatico ou quando expressividade importa mais que velocidade.",
+    },
+    {
+        "id": "piper",
+        "name": "Piper (Leve)",
+        "needs_gpu": False,
+        "needs_internet": False,
+        "quality": "razoavel",
+        "description": "Ultra-leve e offline. Roda em qualquer hardware sem internet.",
+        "detail": "Motor TTS minimalista que roda em CPU sem internet. Muito rapido e leve, ideal para ambientes sem rede ou com hardware limitado. Qualidade inferior aos outros motores - voz soa mais robotica. Use quando offline total for requisito.",
+    },
+    {
+        "id": "xtts",
+        "name": "XTTS (Clonar Voz)",
+        "needs_gpu": True,
+        "needs_internet": False,
+        "quality": "muito boa",
+        "description": "Clona a voz original do video. A dublagem soa como a mesma pessoa.",
+        "detail": "Modelo Coqui XTTS que clona a voz do falante original do video. Extrai caracteristicas da voz (timbre, tom, ritmo) e gera a fala traduzida com a mesma voz. Requer GPU e e mais lento. O resultado e impressionante: parece que a pessoa original esta falando em outro idioma.",
+    },
 ]
 
 TRANSLATION_ENGINES = [
